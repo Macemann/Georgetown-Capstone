@@ -1,0 +1,307 @@
+<html>
+<head>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="{{ url_for('static',filename='js/d3-cloud-master/d3.layout.cloud.js') }}"></script>
+<link type="text/css" rel="stylesheet" href="{{ url_for('static',filename='force.css') }}"/>
+</head>
+
+
+<style>
+    body {
+        font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
+    }
+    .legend {
+        border: 1px solid #555555;
+        border-radius: 5px 5px 5px 5px;
+        font-size: 0.8em;
+        margin: 10px;
+        padding: 8px;
+    }
+    .bld {
+        font-weight: bold;
+    }
+</style>
+
+<body>
+
+<div style="border: 2px solid; height: 100px; float: left; width: 100%; color: navy; background-color: gray;" id="1">
+    <br>
+    <center><h1 style="postition: relative">User: {{ user['name'] }}</h1></center>
+</div>
+
+<div style="border: 1px solid; float: left; width: 33%; height: 750px; overflow:auto" id="1">
+  <h2><center>Tweet Key Words</center></h2>
+  <hr>
+    {% for post in posts %}
+    <div>
+        <p>at: {{ post.Date }}  <b>{{ post.author }}</b> says:<br> <font color="red"><b>{{ post.Keywords}}</b></font></p>
+        <p><font color='green'>Top 5 Most Similar Tweets</font></p>
+        <p>{{ post.html|safe }} </p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- <div style="border: 1px solid; float: right; width: 20%; height: 750px;" id="1">five</div> -->
+<div id="user_profile" style="border: 1px solid; width: 33%; float: left; height: 750px; overflow:auto;" id="1">
+  <table border="1" style="width: 100%;">
+      <tr valign="top">
+
+          <td><img src="{{ url_for('static',filename='avatar.jpg') }}"></td>
+          <td><h1>User: {{ user['screen_name'] }}</h1></td>
+      </tr>
+      {% for k,v in user.iteritems() %}
+      <tr valign="top">
+        <td>{{ k }}</td><td>{{ v }}</td>
+      </tr>
+      {% endfor %}     
+  </table>
+  <table border="1" style="width: 100%;">
+      <tr valign="top">
+          <td colspan="2"><h1>Top 10 Word Frequencies</h1></td>
+      </tr>
+      {% for freq in top_ten %}
+      <tr valign="top">
+        <td>{{ freq['text'] }}</td><td>{{ freq['size'] }}</td>
+      </tr>
+      {% endfor %}     
+  </table>
+  <hr>
+
+</div>
+
+<div id="chart" style="border: 1px solid; float:left; width:33%; height: 750px; overflow:auto;">
+
+</div>
+
+
+<div id="word_cloud" style="border: 1px solid; float:left; width:66%; height: 400px; overflow:auto;">
+
+</div>
+
+<div id="graph_stats" style="border: 1px solid; float:left; width:33%; height: 400px; overflow:auto;">
+  <table border="1" style="width: 100%;">
+      <tr valign="top">
+
+          <td><h1>Graph Statistics</h1></td>
+          <td><h1>User: {{ user['screen_name'] }}</h1></td>
+      </tr>
+      {% for k,v in graph_stats.iteritems() %}
+      <tr valign="top">
+        <td title="{{ v[1] }}">{{ k }}</td><td>{{ v[0] }}</td>
+      </tr>
+      {% endfor %}     
+  </table>
+
+
+  <h3><font color="blue">Degree Centrality</font></h3>
+  <ol>
+  {% for items in degree_centrality %}
+    <li><b>{{ items[1] }}</b> :&nbsp; {{ items[2] }}</li>
+  {% endfor %}
+  </ol>
+
+  <h3><font color="blue">Betweenness Centrality</font></h3>
+  <ol>
+  {% for items in betweenness_centrality %}
+    <li><b>{{ items[1] }}</b> :&nbsp; {{ items[2] }}</li>
+  {% endfor %}
+  </ol>
+
+  <h3><font color="blue">Closeness Centrality</font></h3>
+  <ol>
+  {% for items in closeness_centrality %}
+    <li><b>{{ items[1] }}</b> :&nbsp; {{ items[2] }}</li>
+  {% endfor %}
+  </ol>
+
+  <h3><font color="blue">Eigenvector Centrality</font></h3>
+  <ol>
+  {% for items in eigenvector_centrality %}
+    <li><b>{{ items[1] }}</b> :&nbsp; {{ items[2] }}</li>
+  {% endfor %}
+  </ol>
+
+  <!--<h3> Centrality</h3>
+  <ol>
+  {% for items in eigenvector_centrality %}
+    <li><b>{{ items[1] }}</b> :&nbsp; {{ items[2] }}</li>
+  {% endfor %}
+  </ol>-->
+
+</div>
+
+<div style="width:50%; float:left; height:600px">
+  <img src="{{ url_for('static',filename='%s_tweet_scores.png' % user['screen_name']) }}"> 
+</div>
+
+<div style="width:50%; float:right; height:600px; vertical-align:middle;">
+  <!-- <span style="display:inline-block; vertical-align:middle; line-height:600px;"> -->
+    <h3><b>Tweet Scores are calculated using:</b>
+    <p>IMPORTANT WORDS are defined in a tuple
+       For each IMPORTANT WORD within a tweet the score is increased by 1
+       Collocation is then used with the bad words and Words such as ('join','like','good')
+       Bigrams are checked within the tweet if a bigram pair is found the score is increased by 10
+    </p>
+    </h3>
+    <h2>
+      <font color="blue">
+        <p>Does a temporal Trend exists: {{ time_series[user['screen_name']]['Trend']  }}</p>
+        <p>Is it an increasing or decreasing Trend: {{ time_series[user['screen_name']]['Increasing or Decreasing Trend']  }}</p>
+        <p>Mann-Kendall Statistic: {{ time_series[user['screen_name']]['P Value']  }}</p>
+      </font>
+
+    </h2>
+  <!-- </span> -->
+</div>
+
+<div style="width:50%; float:left; height:600px;">
+  <img src="{{ url_for('static',filename='%s_corr.png' % user['screen_name'] ) }}">
+</div>
+
+
+<div style="width:50%; float:right; height:600px; vertical-align:middle;">
+  <!-- <span style="display:inline-block; vertical-align:middle; line-height:600px;"> -->
+    <h3>Pearson Correlation between Daily Tweet Scores and Coalition Airstrikes</h3>
+    <h3><font color="red">Red Lines indicate dates of Beheadings</font></h3>
+    <font color="blue">
+    <h2>
+      <p>Statistic: {{ time_series[user['screen_name']]['Pearson Correlation Statistic']  }}</p>
+      <p>Correlation: {{ time_series[user['screen_name']]['Pearson Correlation']  }}</p>
+    </h2>
+    </font>
+  <!-- </span> -->
+</div>
+
+<!-- <div style="width:50%; float:right; heightj:400px">
+  <table border="1" style="width: 100%;">
+      <tr valign="top">
+
+          <td ><h1>Time Series Statistics</h1></td>
+          <td><h1>Tweet Scores vs Coalition Airstrikes</h1></td>
+      </tr>
+      {% for k,v in time_series[user['screen_name']].iteritems() %}
+      <tr valign="top">
+        <td title="{{ v[1] }}">{{ k }}</td><td>{{ v }}</td>
+      </tr>
+      {% endfor %}     
+  </table>
+</div>
+ -->
+
+
+
+<script>
+
+   var frequency_list = {{ word_cloud|safe }};
+
+
+    var color = d3.scale.linear()
+            .domain([0,1,2,3,4,5,6,10,15,20,100])
+            .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+
+    d3.layout.cloud().size([800, 300])
+            .words(frequency_list)
+            .rotate(0)
+            .fontSize(function(d) { return d.size; })
+            .on("end", draw)
+            .start();
+
+    function draw(words) {
+        d3.select("#word_cloud").append("svg")
+                .attr("width", 800)
+                .attr("height", 350)
+                .attr("class", "wordcloud")
+                .append("g")
+                // without the transform, words words would get cutoff to the left and top, they would
+                // appear outside of the SVG area
+                .attr("transform", "translate(320,200)")
+                .selectAll("text")
+                .data(words)
+                .enter().append("text")
+                .style("font-size", function(d) { return d.size + "px"; })
+                .style("fill", function(d, i) { return color(i); })
+                .style("margin-right", function(d) {return d.size + "px"})
+                .attr("transform", function(d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                })
+                .text(function(d) { return d.text; });
+    }
+</script>
+
+
+<!-- <div style="border: 1px solid; float: right; 20%; height: 750px;" id="1">four</div> -->
+
+<script>
+  var w = 800,
+    h = 800,
+    fill = d3.scale.category20();
+
+  var vis = d3.select("#chart")
+    .append("svg:svg")
+      .attr("width", w)
+      .attr("height", h);
+
+  // d3.json("force.json", function(json) {
+    d3.json("{{ url_for('static',filename='%s_graph.json' % user.screen_name) }}", function(json) {
+    // d3.json("{{ url_for('static',filename='all_graph.json') }}", function(json) {
+    var force = d3.layout.force()
+      .charge(-120)
+      .linkDistance(30)
+      .nodes(json.nodes)
+      .links(json.links)
+      .size([w, h])
+      .start();
+
+  var link = vis.selectAll("line.link")
+      .data(json.links)
+    .enter().append("svg:line")
+      .attr("class", "link")
+    // .style("stroke-width", function(d) { return Math.sqrt(d.weight); })
+    .style("stroke-width", function(d) { return d.weight; })
+    .attr("x1", function(d) { return d.source.x; })
+    .attr("y1", function(d) { return d.source.y; })
+    .attr("x2", function(d) { return d.target.x; })
+    .attr("y2", function(d) { return d.target.y; });
+
+  var node = vis.selectAll("circle.node")
+      .data(json.nodes)
+    .enter().append("svg:circle")
+      .attr("class", "node")
+      .attr("cx", function(d) { return d.x; })
+      .attr("cy", function(d) { return d.y; })
+      .attr("r", function(d) {return d.size;})
+      .style("fill", function(d) { return fill(d.node_color); })
+      .call(force.drag);
+
+  node.append("svg:title")
+    .text(function(d) { return d.screen_name; });
+
+  node.append("text")
+      .attr("dx", 12)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.screen_name });
+
+  vis.style("opacity", 1e-6)
+    .transition()
+      .duration(1000)
+    .style("opacity", 1);
+
+
+  force.on("tick", function() {
+    link.attr("x1", function(d) { return d.source.x; })
+      .attr("y1", function(d) { return d.source.y; })
+      .attr("x2", function(d) { return d.target.x; })
+      .attr("y2", function(d) { return d.target.y; });
+    node.attr("cx", function(d) { return d.x; })
+      .attr("cy", function(d) { return d.y; });
+    });
+  });
+// );
+</script>
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Hi, {{ user.nickname }}!</h1>
+    <ul>
+    {% for nn,fn in users.iteritems() %}
+
+    <li>{{ fn }} :     <a href="http://127.0.0.1:5000/user/{{ nn }}">{{ nn }}</a></li>
+    {% endfor %}
+    </ul>
+{% endblock %}
+

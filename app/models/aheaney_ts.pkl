@@ -1,0 +1,67 @@
+(dp0
+Vaheaney
+p1
+(dp2
+S'Trend'
+p3
+cnumpy.core.multiarray
+scalar
+p4
+(cnumpy
+dtype
+p5
+(S'b1'
+p6
+I0
+I1
+tp7
+Rp8
+(I3
+S'|'
+p9
+NNNI-1
+I-1
+I0
+tp10
+bS'\x01'
+p11
+tp12
+Rp13
+sS'P Value'
+p14
+g4
+(g5
+(S'f8'
+p15
+I0
+I1
+tp16
+Rp17
+(I3
+S'<'
+p18
+NNNI-1
+I-1
+I0
+tp19
+bS'\x00k\xba\x05\xd8\xf6\xd9?'
+p20
+tp21
+Rp22
+sS'Pearson Correlation'
+p23
+S'No or negligable relationship'
+p24
+sS'Pearson Correlation Statistic'
+p25
+g4
+(g17
+S'\xa2"\xf8\xb8iH\xae\xbf'
+p26
+tp27
+Rp28
+sS'Increasing or Decreasing Trend'
+p29
+S'Decreasing'
+p30
+ss.

@@ -1,0 +1,84 @@
+html, body {
+    height:100%;
+    margin:0;
+    padding:0;
+}
+header{
+    width: 100%;
+    background: yellow;
+    position: fixed; 
+    top: 0;
+    height: 60px !important;
+    opacity:.8;
+}
+
+.content {
+    position:relative;
+    height: 100%;
+    width:600px; /* Sizing - any length */
+    padding:60px 0 30px 0; /* Header height and footer height */
+    margin:0 auto 0 auto; /* Center content */
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    -o-box-sizing:border-box;
+    -ms-box-sizing:border-box;
+    box-sizing:border-box;
+}
+
+.sidebar1, .sidebar2 {
+    background: red;
+    top:60px;
+    bottom:30px;
+    width: 100px;
+    position:absolute;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    -o-box-sizing:border-box;
+    -ms-box-sizing:border-box;
+    box-sizing:border-box;
+}
+
+.sidebar1 {
+    left:0;
+}
+
+.sidebar2 {
+    right: 0;
+}
+
+#scrollable2 {
+    background:green;
+    height: 100%;
+    min-width: 300px;
+    margin-left: 100px;
+    margin-right: 100px;
+    overflow:auto;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    -o-box-sizing:border-box;
+    -ms-box-sizing:border-box;
+    box-sizing:border-box;
+}
+
+footer {
+    width: 100%;
+    background: yellow;
+    position: fixed; 
+    bottom: 0;
+    height: 30px;
+}
+
+.top {
+    position:absolute;
+    left:0; right:0;
+    height: 92px;
+}
+.left {
+    position:absolute;
+    left:0; top:92px; bottom: 0;
+    width: 178px;
+}
+.main {
+    position: absolute;
+    left:178px; top:92px; right:0; bottom:0;
+}
